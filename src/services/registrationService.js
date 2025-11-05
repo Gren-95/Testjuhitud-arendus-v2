@@ -107,7 +107,6 @@ export class RegistrationService {
     // Arvuta aeg trenni algusest kuni tühistamiseni
     const trenniAlgus = new Date(registration.training.startTime);
     const tühistamiseAeg = new Date(registration.cancelledAt);
-    const praeguneAeg = this.dateService.now();
 
     // Kontrolli, kas tühistati hiljem kui 24h enne trenni
     const aegEnneTrenni = trenniAlgus.getTime() - tühistamiseAeg.getTime();
