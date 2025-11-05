@@ -30,6 +30,14 @@ jobs:
         env:
           DATABASE_URL: "file:./test.db"
       
+      - name: Clean database before tests
+        run: |
+          # Kustuta test andmebaas, et tagada puhtas algus
+          rm -f test.db test.db-journal
+          npm run migrate:deploy
+        env:
+          DATABASE_URL: "file:./test.db"
+      
       - name: Run tests
         run: npm run test:coverage
         env:

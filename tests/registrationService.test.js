@@ -11,6 +11,16 @@ describe('Registreerimise teenus', () => {
   });
 
   afterEach(async () => {
+    // Kustuta registreerimised enne õpilasi ja trenne (FK piirangud)
+    await prisma.registration.deleteMany();
+    await prisma.student.deleteMany();
+    await prisma.training.deleteMany();
+    await prisma.$disconnect();
+  });
+
+  beforeAll(async () => {
+    // Puhasta andmebaas enne kõiki teste
+    const prisma = new PrismaClient();
     await prisma.registration.deleteMany();
     await prisma.student.deleteMany();
     await prisma.training.deleteMany();
