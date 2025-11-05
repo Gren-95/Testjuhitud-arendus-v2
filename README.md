@@ -58,22 +58,26 @@ Süsteem võimaldab õpilastel registreeruda fitness trennidele, tühistada regi
 
 ### Paigaldus
 
-1. Paigalda sõltuvused:
+1. **Paigalda sõltuvused:**
 ```bash
 npm install
 ```
 
-1. Kopeeri `.env.example` failiks `.env`:
+2. **Kopeeri `.env.example` failiks `.env` (KOHUSTUSLIK!):**
 ```bash
 cp .env.example .env
 ```
 
-1. Käivita migratsioonid:
+**⚠️ OLULINE**: Ilma `.env` failita testid ei tööta! `.env` fail ei ole git'is (turvalisuse huvides).
+
+3. **Käivita migratsioonid:**
 ```bash
 npm run migrate:dev
 ```
 
-1. (Valikuline) Täida andmebaas algandmetega:
+See loob andmebaasi faili (`dev.db`) ja käivitab kõik migratsioonid.
+
+4. **(Valikuline) Täida andmebaas algandmetega:**
 ```bash
 npm run db:seed
 ```

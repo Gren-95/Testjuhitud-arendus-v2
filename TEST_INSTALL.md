@@ -44,7 +44,47 @@ npm run test:coverage
 
 ## Võimalikud probleemid
 
-- **Prisma Client puudub**: Käivita `npm run db:generate`
-- **Migratsioonid ei tööta**: Veendu, et `.env` fail on olemas ja `DATABASE_URL` on õige
-- **Testid ei käivitu**: Veendu, et `npm install` on edukalt lõppenud
+### ❌ Error: "Environment variable not found: DATABASE_URL"
+
+**Lahendus**: `.env` fail puudub või on vale.
+
+```bash
+# Kopeeri .env.example failiks .env
+cp .env.example .env
+
+# Kontrolli, et DATABASE_URL on seadistatud
+cat .env
+```
+
+### ❌ Error: "Prisma Client puudub"
+
+**Lahendus**: Käivita Prisma Client genereerimine.
+
+```bash
+npm run db:generate
+```
+
+### ❌ Error: "Migratsioonid ei tööta"
+
+**Lahendus**: Veendu, et `.env` fail on olemas ja `DATABASE_URL` on õige.
+
+```bash
+# Kontrolli .env faili
+cat .env
+
+# Käivita migratsioonid uuesti
+npm run migrate:dev
+```
+
+### ❌ Error: "Testid ei käivitu"
+
+**Lahendus**: Veendu, et kõik sõltuvused on paigaldatud.
+
+```bash
+# Paigalda sõltuvused uuesti
+npm install
+
+# Kontrolli, et node_modules on olemas
+ls node_modules
+```
 
