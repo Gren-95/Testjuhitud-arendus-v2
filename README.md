@@ -90,9 +90,17 @@ npm run dev
 ```
 
 ### Testide käivitamine
+
+**⚠️ Eeltingimus**: Veendu, et `.env` fail on olemas ja `DATABASE_URL` on seadistatud!
+
 ```bash
 npm test
 ```
+
+**Kui testid ei tööta**, kontrolli:
+- Kas `.env` fail on olemas? (`cp .env.example .env`)
+- Kas `DATABASE_URL` on seadistatud? (vaata `.env` faili)
+- Kas migratsioonid on käivitatud? (`npm run migrate:dev`)
 
 ### Testid jälgimise režiimis
 ```bash
