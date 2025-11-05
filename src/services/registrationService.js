@@ -56,7 +56,7 @@ export class RegistrationService {
   }
 
   async tühistaRegistreerimine(registrationId) {
-    // Kasuta transaktsiooni
+    // Kasuta transaktsiooni, et tagada andmekonsistentsus
     return await this.prisma.$transaction(async (tx) => {
       // Leia registreerimine
       const registration = await tx.registration.findUnique({
@@ -71,7 +71,7 @@ export class RegistrationService {
         throw new Error('Registreerimine on juba tühistatud');
       }
 
-      // Uuenda registreerimise staatust
+      // Uuenda registreerimise staatust ja märgi tühistamise aeg
       const tühistatud = await tx.registration.update({
         where: { id: registrationId },
         data: {
