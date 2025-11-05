@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import { DateService } from './dateService.js';
 
 export class RegistrationService {
-  constructor(prisma) {
+  constructor(prisma, dateService = new DateService()) {
     this.prisma = prisma;
+    this.dateService = dateService;
   }
 
   async registreeriÕpilane(trainingId, studentId) {
@@ -71,16 +73,53 @@ export class RegistrationService {
         throw new Error('Registreerimine on juba tühistatud');
       }
 
-      // Uuenda registreerimise staatust
+      // Kasuta dateService kellaaega
       const tühistatud = await tx.registration.update({
         where: { id: registrationId },
         data: {
           status: 'CANCELLED',
-          cancelledAt: new Date()
+          cancelledAt: this.dateService.now()
         }
       });
 
       return tühistatud;
     });
+  }
+
+  async arvutaHilinemistasu(registrationId) {
+    // Leia registreerimine koos trenniga
+    const registration = await this.prisma.registration.findUnique({
+      where: { id: registrationId },
+      include: {
+        training: true
+      }
+    });
+
+    if (!registration) {
+      throw new Error('Registreerimist ei leitud');
+    }
+
+    // Kui registreerimine pole tühistatud, hilinemistasu on 0
+    if (registration.status !== 'CANCELLED' || !registration.cancelledAt) {
+      return 0;
+    }
+
+    // Arvuta aeg trenni algusest kuni tühistamiseni
+    const trenniAlgus = new Date(registration.training.startTime);
+    const tühistamiseAeg = new Date(registration.cancelledAt);
+    const praeguneAeg = this.dateService.now();
+
+    // Kontrolli, kas tühistati hiljem kui 24h enne trenni
+    const aegEnneTrenni = trenniAlgus.getTime() - tühistamiseAeg.getTime();
+    const tundEnneTrenni = aegEnneTrenni / (1000 * 60 * 60);
+
+    // Kui tühistati varem kui 24h enne trenni, hilinemistasu on 0
+    if (tundEnneTrenni >= 24) {
+      return 0;
+    }
+
+    // Arvuta hilinemistasu: 5 eurot tunnis
+    const hilinemistasu = Math.max(0, (24 - tundEnneTrenni) * 5);
+    return Math.round(hilinemistasu * 100) / 100; // Ümarda 2 kohta
   }
 }
