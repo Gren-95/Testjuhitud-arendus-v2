@@ -4,7 +4,44 @@ TDD projekt ORM ja mockidega - ÕV4, ÕV5, ÕV6 harjutus.
 
 ## Domeen
 
-TODO: kirjeldada valitud domeen ja 3 funktsionaalsust.
+**Fitness koolitusregistreerimise süsteem**
+
+Süsteem võimaldab õpilastel registreeruda fitness trennidele, tühistada registreerimisi ja arvutada hilinemistasu.
+
+### Funktsionaalsused
+
+#### F1: Registreeri õpilane trenni
+**Domeenireegel**: "Ühte trenni saab registreerida ainult kui vabu kohti on."
+
+- Testid:
+  - "peab lubama registreerida kui vabu kohti on"
+  - "peab keelama registreerida kui kohti pole"
+
+#### F2: Tühista registreerimine
+**Domeenireegel**: "Tühistamisel muutub staatus CANCELLED ja aktiivne registreerimine suletakse."
+
+- Testid:
+  - "peab lubama tühistada aktiivse registreerimise"
+  - "peab muutma registreerimise staatust CANCELLED"
+  - "peab lubama uue registreerimise pärast tühistamist"
+
+#### F3: Arvuta hilinemistasu
+**Domeenireegel**: "Kui õpilane tühistab hiljem kui 24h enne trenni, arvuta hilinemistasu 5 eurot tunnis."
+
+- Testid:
+  - "peab arvutama hilinemistasu kui tühistatakse hiljem kui 24h enne trenni"
+  - "peab mitte arvutama hilinemistasu kui tühistatakse varem kui 24h enne trenni"
+  - "peab tagastama 0 kui registreerimine pole tühistatud"
+
+### ORM mudelid
+
+- `Training` - trenn (id, nimi, maxCapacity, startTime)
+- `Student` - õpilane (id, nimi, email)
+- `Registration` - registreerimine (id, trainingId, studentId, status, createdAt, cancelledAt)
+
+### Mockid
+
+- `DateService` - kellaaja mockimine testides determinismiks
 
 ## Tehniline raam
 

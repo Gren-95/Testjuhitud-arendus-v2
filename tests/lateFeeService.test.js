@@ -1,28 +1,20 @@
 import { RegistrationService } from '../src/services/registrationService.js';
+import { DateService } from '../src/services/dateService.js';
 import { PrismaClient } from '@prisma/client';
 
 describe('Hilinemistasu teenus', () => {
   let prisma;
   let registrationService;
-  let mockDate;
-  let originalDate;
+  let dateService;
+  let mockNow;
 
   beforeEach(() => {
     prisma = new PrismaClient();
-    registrationService = new RegistrationService(prisma);
-    
-    // Mock kellaaeg
-    originalDate = Date;
-    mockDate = new Date('2024-12-01T10:00:00Z');
-    global.Date = jest.fn(() => mockDate);
-    global.Date.now = jest.fn(() => mockDate.getTime());
-    global.Date.parse = originalDate.parse;
+    dateService = new DateService();
+    registrationService = new RegistrationService(prisma, dateService);
   });
 
   afterEach(async () => {
-    // Taasta originaalne Date
-    global.Date = originalDate;
-    
     await prisma.registration.deleteMany();
     await prisma.student.deleteMany();
     await prisma.training.deleteMany();
@@ -54,14 +46,11 @@ describe('Hilinemistasu teenus', () => {
       );
 
       // Mock kellaaeg: 23h enne trenni (tühistatakse hiljem kui 24h enne)
-      mockDate = new Date('2024-12-02T09:00:00Z'); // 1h enne trenni
-      global.Date = jest.fn(() => mockDate);
-      global.Date.now = jest.fn(() => mockDate.getTime());
+      mockNow = new Date('2024-12-02T09:00:00Z'); // 1h enne trenni
+      dateService.now = () => mockNow;
 
       // Act
-      const tulemus = await registrationService.tühistaRegistreerimine(
-        registration.id
-      );
+      await registrationService.tühistaRegistreerimine(registration.id);
 
       const hilinemistasu = await registrationService.arvutaHilinemistasu(
         registration.id
@@ -96,9 +85,8 @@ describe('Hilinemistasu teenus', () => {
       );
 
       // Mock kellaaeg: 25h enne trenni (tühistatakse varem kui 24h enne)
-      mockDate = new Date('2024-12-02T09:00:00Z'); // 25h enne trenni
-      global.Date = jest.fn(() => mockDate);
-      global.Date.now = jest.fn(() => mockDate.getTime());
+      mockNow = new Date('2024-12-02T09:00:00Z'); // 25h enne trenni
+      dateService.now = () => mockNow;
 
       // Act
       await registrationService.tühistaRegistreerimine(registration.id);
@@ -141,6 +129,12 @@ describe('Hilinemistasu teenus', () => {
       // Assert
       expect(hilinemistasu).toBe(0);
     });
+
+    it('peab viskama vea kui registreerimist ei leitud', async () => {
+      // Act & Assert
+      await expect(
+        registrationService.arvutaHilinemistasu(999)
+      ).rejects.toThrow('Registreerimist ei leitud');
+    });
   });
 });
-

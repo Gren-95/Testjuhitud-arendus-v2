@@ -80,6 +80,47 @@ describe('Registreerimise teenus', () => {
         registrationService.registreeriÕpilane(training.id, student2.id)
       ).rejects.toThrow('Trenni kohti pole saadaval');
     });
+
+    it('peab viskama vea kui trenni ei leitud', async () => {
+      // Arrange
+      const student = await prisma.student.create({
+        data: {
+          name: 'Jaan Tamm',
+          email: 'jaan@example.com'
+        }
+      });
+
+      // Act & Assert
+      await expect(
+        registrationService.registreeriÕpilane(999, student.id)
+      ).rejects.toThrow('Trenni ei leitud');
+    });
+
+    it('peab keelama registreerida kui õpilane on juba registreeritud', async () => {
+      // Arrange
+      const training = await prisma.training.create({
+        data: {
+          name: 'Jõutreening',
+          maxCapacity: 10,
+          startTime: new Date('2024-12-01T10:00:00Z')
+        }
+      });
+
+      const student = await prisma.student.create({
+        data: {
+          name: 'Jaan Tamm',
+          email: 'jaan@example.com'
+        }
+      });
+
+      // Esimene registreerimine
+      await registrationService.registreeriÕpilane(training.id, student.id);
+
+      // Act & Assert
+      await expect(
+        registrationService.registreeriÕpilane(training.id, student.id)
+      ).rejects.toThrow('Õpilane on juba registreeritud');
+    });
   });
 });
 
