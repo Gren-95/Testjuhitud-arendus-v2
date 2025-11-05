@@ -54,4 +54,33 @@ export class RegistrationService {
       return registration;
     });
   }
+
+  async tühistaRegistreerimine(registrationId) {
+    // Kasuta transaktsiooni
+    return await this.prisma.$transaction(async (tx) => {
+      // Leia registreerimine
+      const registration = await tx.registration.findUnique({
+        where: { id: registrationId }
+      });
+
+      if (!registration) {
+        throw new Error('Registreerimist ei leitud');
+      }
+
+      if (registration.status === 'CANCELLED') {
+        throw new Error('Registreerimine on juba tühistatud');
+      }
+
+      // Uuenda registreerimise staatust
+      const tühistatud = await tx.registration.update({
+        where: { id: registrationId },
+        data: {
+          status: 'CANCELLED',
+          cancelledAt: new Date()
+        }
+      });
+
+      return tühistatud;
+    });
+  }
 }
