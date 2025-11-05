@@ -1,4 +1,4 @@
-// Prisma skeem
+// Prisma skeem - Fitness koolitusregistreerimise süsteem
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,5 +8,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// TODO: Lisa domeenimudelid siia
+model Training {
+  id          Int      @id @default(autoincrement())
+  name        String
+  maxCapacity Int
+  startTime   DateTime
+  registrations Registration[]
+  
+  @@map("trainings")
+}
 
+model Student {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  registrations Registration[]
+  
+  @@map("students")
+}
+
+model Registration {
+  id          Int      @id @default(autoincrement())
+  trainingId  Int
+  studentId   Int
+  status      String   @default("ACTIVE") // ACTIVE, CANCELLED
+  createdAt   DateTime @default(now())
+  cancelledAt DateTime?
+  
+  training    Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  @@unique([trainingId, studentId])
+  @@map("registrations")
+}
