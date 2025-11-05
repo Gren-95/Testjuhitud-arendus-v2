@@ -58,28 +58,22 @@ Süsteem võimaldab õpilastel registreeruda fitness trennidele, tühistada regi
 
 ### Paigaldus
 
-1. Klooni repo:
-```bash
-git clone <repo-url>
-cd testjuhitud-arendus
-```
-
-2. Paigalda sõltuvused:
+1. Paigalda sõltuvused:
 ```bash
 npm install
 ```
 
-3. Kopeeri `.env.example` failiks `.env`:
+1. Kopeeri `.env.example` failiks `.env`:
 ```bash
 cp .env.example .env
 ```
 
-4. Käivita migratsioonid:
+1. Käivita migratsioonid:
 ```bash
 npm run migrate:dev
 ```
 
-5. (Valikuline) Täida andmebaas algandmetega:
+1. (Valikuline) Täida andmebaas algandmetega:
 ```bash
 npm run db:seed
 ```
