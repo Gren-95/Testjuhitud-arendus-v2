@@ -18,15 +18,6 @@ describe('Tühistamise teenus', () => {
     await prisma.$disconnect();
   });
 
-  beforeAll(async () => {
-    // Puhasta andmebaas enne kõiki teste
-    const prisma = new PrismaClient();
-    await prisma.registration.deleteMany();
-    await prisma.student.deleteMany();
-    await prisma.training.deleteMany();
-    await prisma.$disconnect();
-  });
-
   describe('tühistaRegistreerimine', () => {
     it('peab lubama tühistada aktiivse registreerimise', async () => {
       // Arrange
@@ -41,7 +32,7 @@ describe('Tühistamise teenus', () => {
       const student = await prisma.student.create({
         data: {
           name: 'Jaan Tamm',
-          email: 'jaan@example.com'
+          email: `jaan-${Date.now()}-${Math.random()}@example.com`
         }
       });
 
@@ -74,7 +65,7 @@ describe('Tühistamise teenus', () => {
       const student = await prisma.student.create({
         data: {
           name: 'Jaan Tamm',
-          email: 'jaan@example.com'
+          email: `jaan-${Date.now()}-${Math.random()}@example.com`
         }
       });
 
@@ -107,14 +98,14 @@ describe('Tühistamise teenus', () => {
       const student1 = await prisma.student.create({
         data: {
           name: 'Jaan Tamm',
-          email: 'jaan@example.com'
+          email: `jaan-${Date.now()}-${Math.random()}@example.com`
         }
       });
 
       const student2 = await prisma.student.create({
         data: {
           name: 'Mari Sepp',
-          email: 'mari@example.com'
+          email: `mari-${Date.now()}-${Math.random()}@example.com`
         }
       });
 
@@ -159,7 +150,7 @@ describe('Tühistamise teenus', () => {
       const student = await prisma.student.create({
         data: {
           name: 'Jaan Tamm',
-          email: 'jaan@example.com'
+          email: `jaan-${Date.now()}-${Math.random()}@example.com`
         }
       });
 

@@ -22,15 +22,6 @@ describe('Hilinemistasu teenus', () => {
     await prisma.$disconnect();
   });
 
-  beforeAll(async () => {
-    // Puhasta andmebaas enne kõiki teste
-    const prisma = new PrismaClient();
-    await prisma.registration.deleteMany();
-    await prisma.student.deleteMany();
-    await prisma.training.deleteMany();
-    await prisma.$disconnect();
-  });
-
   describe('arvutaHilinemistasu', () => {
     it('peab arvutama hilinemistasu kui tühistatakse hiljem kui 24h enne trenni', async () => {
       // Arrange
@@ -46,7 +37,7 @@ describe('Hilinemistasu teenus', () => {
       const student = await prisma.student.create({
         data: {
           name: 'Jaan Tamm',
-          email: 'jaan@example.com'
+          email: `jaan-${Date.now()}-${Math.random()}@example.com`
         }
       });
 
@@ -85,7 +76,7 @@ describe('Hilinemistasu teenus', () => {
       const student = await prisma.student.create({
         data: {
           name: 'Jaan Tamm',
-          email: 'jaan@example.com'
+          email: `jaan-${Date.now()}-${Math.random()}@example.com`
         }
       });
 
@@ -122,7 +113,7 @@ describe('Hilinemistasu teenus', () => {
       const student = await prisma.student.create({
         data: {
           name: 'Jaan Tamm',
-          email: 'jaan@example.com'
+          email: `jaan-${Date.now()}-${Math.random()}@example.com`
         }
       });
 
